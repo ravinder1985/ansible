@@ -1,0 +1,29 @@
+#Install latest version avaialble
+- name: Intsall apache on Centos
+  yum: name={{ apache }} update_cache=yes state=present
+  when: ansible_distribution == "CentOS" and apache_version is undefined
+- name: Intsall apache on Ubuntu
+  apt: name={{ apache }} update_cache=yes state=present
+  when: ansible_distribution == "Ubuntu" and apache_version is undefined
+
+#Install specific version if apache_version variable available in var/OS.yum file.
+- name: Intsall specific apache version {{ apache_version }}  on Centos
+  #remove specific version
+  #yum: name={{ apache }}-2.2.15-47.el6.centos state=absent
+  yum: name={{ apache }}-{{ apache_version }} update_cache=yes state=present
+  when: ansible_distribution == "CentOS" and apache_version is defined
+- name: Intsall specific apache version {{ apache_version }} on Ubuntu
+  #remove specific version
+  #apt: name={{ apache }}=2.4.7-1ubuntu4.8 state=absent
+  apt: name={{ apache }}={{ apache_version }} update_cache=yes install_recommends=no state=present
+  when: ansible_distribution == "Ubuntu" and apache_version is defined
+
+# Make sure apache is running.
+- name: Ensure apache is running
+  service: name={{ apache }} state=started enabled=yes
+
+# Restart if config changes detected.
+- name: Update Config file
+  template: src=apache_configs/test.txt dest=/tmp/test.txt
+  notify:
+  - restart apache

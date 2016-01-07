@@ -1,0 +1,23 @@
+---
+ #- name: updated icinga.key
+   #shell: rpm --import http://packages.icinga.org/icinga.key
+  - name: Install epel
+    yum: name=http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm state=present
+ #- name: add NRPE Repo
+    #shell: rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm 
+  - name: Install epel-release
+    yum: name=epel-release enablerepo=extras update_cache=yes state=present
+  - name: Install nrpe
+    yum: name=nrpe enablerepo=epel state=present
+  - name: Install nagios-plugins-all
+    yum: name=nagios-plugins-all state=present
+  - name: Install nagios-plugins-nrpe
+    yum: name=nagios-plugins-nrpe state=present
+# Make sure apache is running.
+  - name: Ensure NRPE is running
+    service: name=nrpe state=started enabled=yes
+# Restart if config changes detected.
+  - name: Update NPRE CONFIGS
+    template: src=nrpe.cfg dest=/etc/nagios/nrpe.cfg
+    notify:
+    - restart nrpe

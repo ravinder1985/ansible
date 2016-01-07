@@ -1,0 +1,6 @@
+# ---
+
+- include_vars: "{{ ansible_distribution }}.yml"
+- include: apache.yml
+  become: yes
+  become_method: sudo

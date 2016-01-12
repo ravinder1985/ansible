@@ -1,4 +1,6 @@
 ---
+  - name: debug msg
+    debug: msg=" {{ ansible_distribution }}  {{ ansible_distribution_major_version }} {{ nrpe.cenos6.rpm }}"
  #- name: updated icinga.key
    #shell: rpm --import http://packages.icinga.org/icinga.key
   - name: Install epel

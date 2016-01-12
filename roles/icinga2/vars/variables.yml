@@ -1,0 +1,5 @@
+
+icinga2:
+  centos6:
+    repo_url: http://packages.icinga.org/epel/ICINGA-release.repo
+    repo_key: http://packages.icinga.org/icinga.key

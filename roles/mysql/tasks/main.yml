@@ -1,0 +1,6 @@
+---
+
+- include_vars: "{{ ansible_distribution_major_version }}.yml"
+- include: mysql.yml
+  become: yes
+  become_method: sudo

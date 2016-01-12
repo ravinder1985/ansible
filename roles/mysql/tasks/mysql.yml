@@ -1,0 +1,60 @@
+---
+  - name: debug msg
+    debug: msg=" {{ ansible_distribution }}  {{ ansible_distribution_major_version }} {{ ansible_hostname }} {{ ansible_local.sql.sql.imported }}"
+  - name: Install mysql 
+    yum: name={{ item }} update_cache=yes state=present
+    with_items: "{{ __mysql_packages }}"
+       #- mysql-server
+       #- mysql
+       #- MySQL-python
+       #- icinga2-ido-mysql
+  - name: Copy config file
+    template: src=root.my.cnf dest=~/.my.cnf mode=0600
+# Make sure mysql is running.
+  - name: Ensure MYSQL is running
+    service: name="{{ __mysql_daemon }}" state=started enabled=yes
+
+  #- name: Add root user with all privilages
+    #mysql_user: name=root password=12345 state=present
+
+  - name: Remove sql test schema
+    mysql_db: name=test state=absent
+
+  - name: Add icinga schema
+    mysql_db: name=icinga state=present
+
+  #- name: Add root user with all privilages
+    #mysql_user: name=root password=12345 state=present
+
+  - name: Add icinga user with all privilages
+    mysql_user: name=icinga password=icinga priv='icinga.*:SELECT,INSERT,UPDATE,DELETE,DROP,CREATE VIEW,INDEX,EXECUTE' state=present
+
+  - name: Remove anonymous users from all HOST
+    mysql_user: name='' host={{ item }} state=absent
+    with_items:
+      - "{{ ansible_hostname }}"
+      - 127.0.0.1
+      - ::1
+      - localhost
+
+  - name: Import sql schema to icinga
+    mysql_db: state=import name=icinga target=/usr/share/icinga2-ido-mysql/schema/mysql.sql
+    register: result
+    ignore_errors: True
+    when: ansible_local.sql.sql.imported is not defined
+
+  - name: Make sure facter dir exist
+    file: path=/etc/ansible/facts.d recurse=yes state=directory
+
+  - name: Update facter
+    template: src=sql.fact dest=/etc/ansible/facts.d mode=0644
+    when: result.success is defined
+
+  - name: print
+    debug: msg=" {{ result }}"
+
+  #- name: Remove sql test schema
+    #mysql_db: login_user=root login_password=12345 name=test state=absent
+# Make sure mysql is running.
+  #- name: Ensure MYSQL is running
+    #service: name=mysqld state=started enabled=yes

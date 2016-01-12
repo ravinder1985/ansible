@@ -1,0 +1,23 @@
+---
+  - name: debug msg
+    debug: msg=" {{ ansible_distribution }}  {{ ansible_distribution_major_version }} {{ nrpe.cenos6.rpm }}"
+  - name: Install epel
+    yum: name={{ nrpe.cenos6.rpm }} state=present
+  - name: iptable install
+    yum: name=iptables state=present
+  - name: Install epel-release
+    yum: name={{ item }} enablerepo=extras update_cache=yes state=present
+    with_items:
+       - epel-release
+       - nrpe
+       - nagios-plugins-all
+  - name: firewall setting
+    shell: iptables -A INPUT -p tcp --dport {{ port }} -j ACCEPT 
+# Make sure apache is running.
+  - name: Ensure NRPE is running
+    service: name=nrpe state=started enabled=yes
+# Restart if config changes detected.
+  - name: Update NPRE CONFIGS
+    template: src=nrpe.cfg dest=/etc/nagios/nrpe.cfg
+    notify:
+    - restart nrpe

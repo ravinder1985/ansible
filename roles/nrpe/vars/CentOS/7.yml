@@ -1,0 +1,8 @@
+nrpe:
+  rpm: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+  service: nrpe
+  openPort: "firewall-cmd --permanent --zone=public --add-port=5667/tcp"
+  packages:
+  - epel-release
+  - nrpe
+  - nagios-plugins-all

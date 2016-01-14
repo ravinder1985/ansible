@@ -1,13 +1,9 @@
 ---
   - name: debug msg
-    debug: msg=" {{ ansible_distribution }}  {{ ansible_distribution_major_version }} {{ ansible_hostname }} {{ ansible_local.sql.sql.imported }}"
+    debug: msg=" {{ ansible_distribution }}  {{ ansible_distribution_major_version }} {{ ansible_hostname }}"
   - name: Install mysql 
     yum: name={{ item }} update_cache=yes state=present
     with_items: "{{ __mysql_packages }}"
-       #- mysql-server
-       #- mysql
-       #- MySQL-python
-       #- icinga2-ido-mysql
   - name: Copy config file
     template: src=root.my.cnf dest=~/.my.cnf mode=0600
 # Make sure mysql is running.
@@ -22,6 +18,10 @@
 
   - name: Add icinga schema
     mysql_db: name=icinga state=present
+    register: schema
+
+  - name: print
+    debug: msg=" {{ schema }}"
 
   #- name: Add root user with all privilages
     #mysql_user: name=root password=12345 state=present
@@ -41,14 +41,17 @@
     mysql_db: state=import name=icinga target=/usr/share/icinga2-ido-mysql/schema/mysql.sql
     register: result
     ignore_errors: True
-    when: ansible_local.sql.sql.imported is not defined
+    #when: ansible_local.sql.sql.imported is undefined
+    when: schema.changed
 
   - name: Make sure facter dir exist
     file: path=/etc/ansible/facts.d recurse=yes state=directory
 
   - name: Update facter
     template: src=sql.fact dest=/etc/ansible/facts.d mode=0644
-    when: result.success is defined
+    #when: result.success is defined
+    when: result.changed
+    #when: result.skipped is not defined
 
   - name: print
     debug: msg=" {{ result }}"

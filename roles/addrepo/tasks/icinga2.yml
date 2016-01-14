@@ -1,0 +1,7 @@
+---
+  - name: add key
+    shell: rpm --import {{ icinga2.key }}
+  - name: add repo
+    shell: curl -o /etc/yum.repos.d/ICINGA-release.repo {{ icinga2.url }}
+  - name: makecache
+    shell: yum makecache

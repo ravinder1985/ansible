@@ -1,0 +1,6 @@
+---
+
+- include_vars: "variables.yml"
+- include: icinga2.yml
+  become: yes
+  become_method: sudo

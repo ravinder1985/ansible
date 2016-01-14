@@ -1,0 +1,3 @@
+---
+- name: Add Apache User to icingacmd
+  user: name=apache shell=/bin/bash groups=icingacmd append=yes

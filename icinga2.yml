@@ -1,4 +1,10 @@
 ---
-- hosts: centos
+- hosts: icinga_openstack
   roles:
-    - role: nrpe
+    - addrepo
+    - nrpe
+    - mysql
+    - apache
+    - icinga2
+    #- mysql
+    #- apache

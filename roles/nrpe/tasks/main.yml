@@ -1,6 +1,7 @@
 ---
 
 - include_vars: "variables.yml"
+- include_vars: "{{ ansible_distribution }}/{{ ansible_distribution_major_version }}.yml"
 - include: nrpe-1.yml
   become: yes
   become_method: sudo

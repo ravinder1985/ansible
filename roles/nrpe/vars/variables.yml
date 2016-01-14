@@ -1,6 +1,6 @@
-port: 5666
-nrpe:
-  cenos6:
-    rpm: http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-  cenos7:
-    rpm: http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+port: 5667
+#nrpe:
+ # cenos6:
+  #  rpm: http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+  #cenos7:
+   # rpm: http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm

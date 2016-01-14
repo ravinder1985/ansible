@@ -1,5 +1,8 @@
 
 icinga2:
-  centos6:
-    repo_url: http://packages.icinga.org/epel/ICINGA-release.repo
-    repo_key: http://packages.icinga.org/icinga.key
+  url: http://packages.icinga.org/epel/ICINGA-release.repo
+  key: http://packages.icinga.org/icinga.key
+commands:
+  - "icingacli setup token create"
+  #- "icingacli setup config webserver apache --document-root /usr/share/icingaweb2/public > /etc/httpd/conf.d/icingaweb2.conf"
+apache: httpd

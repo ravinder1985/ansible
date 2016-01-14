@@ -4,3 +4,9 @@
 - include: icinga2.yml
   become: yes
   become_method: sudo
+- include: icinga2web.yml
+  become: yes
+  become_method: sudo
+- include: addUser.yml
+  become: yes
+  become_method: sudo

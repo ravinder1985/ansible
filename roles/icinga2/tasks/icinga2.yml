@@ -1,11 +1,16 @@
 ---
   - name: add key
-    shell: rpm --import {{ icinga2.centos6.repo_key }}
+    register: result
+    shell: rpm --import {{ icinga2.key }}
+  - name: print
+    debug: msg=" {{ result }}"
   - name: add repo
-    shell: curl -o /etc/yum.repos.d/ICINGA-release.repo {{ icinga2.centos6.repo_url }}
+    shell: curl -o /etc/yum.repos.d/ICINGA-release.repo {{ icinga2.url }}
   - name: makecache
     shell: yum makecache
   - name: Install ICINGA2
     yum: name=icinga2 state=present
   - name: Start icinga2
-    service: name=icinga2 state=started enabled=yes 
+    service: name=icinga2 state=started enabled=yes
+  - name: Activate command feature
+    shell: icinga2 feature enable command 

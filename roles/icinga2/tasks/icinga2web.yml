@@ -1,0 +1,13 @@
+---
+  - name: Install ICINGA2 WEB
+    yum: name={{ item }} state=present
+    with_items:
+        - icingaweb2
+        - icingacli
+  - name: Activate command feature
+    shell: "{{ item }}"
+    with_items: "{{ commands }}"
+  - name : copy Apache configs
+    template: src=icingaweb2.conf dest=/etc/httpd/conf.d/icingaweb2.conf
+    notify:
+      - restart apache

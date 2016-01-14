@@ -1,0 +1,4 @@
+
+icinga2:
+  url: http://packages.icinga.org/epel/ICINGA-release.repo
+  key: http://packages.icinga.org/icinga.key

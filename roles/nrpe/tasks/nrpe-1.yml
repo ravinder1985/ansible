@@ -15,7 +15,7 @@
 #no need to open on openstack instance
   #- name: firewall setting
     #shell: "{{ nrpe.openPort }}"
-# Make sure apache is running.
+# Make sure nrpe is running.
   - name: Ensure NRPE is running
     service: name={{ nrpe.service }} state=started enabled=yes
 # Restart if config changes detected.

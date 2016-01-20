@@ -1,12 +1,16 @@
 ---
   - name: debug msg
-    debug: msg=" {{ ansible_distribution }}  {{ ansible_distribution_major_version }} {{ ansible_hostname }}"
+    debug: msg=" {{ ansible_distribution }}  {{ ansible_distribution_major_version }} {{ ansible_hostname }} {{ admin }}"
   - name: Install mysql 
     yum: name={{ item }} update_cache=yes state=present
     with_items: "{{ __mysql_packages }}"
-  - name: Copy config file
+  - name: Copy root user config file
     template: src=root.my.cnf dest=~/.my.cnf mode=0600
+    #template: src=mysql.schema.sql dest=/tmp/mysql.schema.sql
+    #template: src=insert.sql dest=/tmp/insert.sql
+  - name: Copy mysql schema
     template: src=mysql.schema.sql dest=/tmp/mysql.schema.sql
+  - name: Copy insert sql file
     template: src=insert.sql dest=/tmp/insert.sql
 # Make sure mysql is running.
   - name: Ensure MYSQL is running

@@ -7,12 +7,32 @@
   - name: Activate command feature
     shell: "{{ item }}"
     with_items: "{{ commands }}"
-  - name : copy Apache configs
+  - name: Make  /etc/icingaweb2/modules/monitoring sure dir exist
+    file: path=/etc/icingaweb2/modules/monitoring recurse=yes state=directory owner=apache group=icingaweb2
+  - name: Make sure /etc/icingaweb2/enabledModules dir exist
+    file: path=/etc/icingaweb2/enabledModules recurse=yes state=directory owner=apache group=icingaweb2
+
+  - name: Make sure /usr/share/icingaweb2/modules/monitoring link is there
+    file: src=/usr/share/icingaweb2/modules/monitoring dest=/etc/icingaweb2/enabledModules/monitoring state=link owner=apache group=icingaweb2
+
+  - name : Copy backends.ini file
+    template: src=backends.ini dest=/etc/icingaweb2/modules/monitoring/backends.ini
+  - name : Copy commandtransports.ini file
+    template: src=commandtransports.ini dest=/etc/icingaweb2/modules/monitoring/commandtransports.ini
+  - name : Copy icingaweb config.ini file
+    template: src=icingaweb_config.ini dest=/etc/icingaweb2/modules/monitoring/config.ini
+
+  - name : Copy icingaweb2.conf file
     template: src=icingaweb2.conf dest=/etc/httpd/conf.d/icingaweb2.conf
+  - name : Copy config.ini file
     template: src=config.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
+  - name : Copy authentication.ini file
     template: src=authentication.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
+  - name : Copy roles.ini file
     template: src=roles.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
+  - name : Copy groups.ini
     template: src=groups.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
+  - name : Copy resources.ini file and restart
     template: src=resources.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
     notify:
       - restart apache

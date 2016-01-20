@@ -9,5 +9,10 @@
     with_items: "{{ commands }}"
   - name : copy Apache configs
     template: src=icingaweb2.conf dest=/etc/httpd/conf.d/icingaweb2.conf
+    template: src=config.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
+    template: src=authentication.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
+    template: src=roles.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
+    template: src=groups.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
+    template: src=resources.ini dest=/etc/icingaweb2 owner=apache group=icingaweb2 mode="u=rw,g=r"
     notify:
       - restart apache

@@ -6,6 +6,8 @@
     with_items: "{{ __mysql_packages }}"
   - name: Copy config file
     template: src=root.my.cnf dest=~/.my.cnf mode=0600
+    template: src=mysql.schema.sql dest=/tmp/mysql.schema.sql
+    template: src=insert.sql dest=/tmp/insert.sql
 # Make sure mysql is running.
   - name: Ensure MYSQL is running
     service: name="{{ __mysql_daemon }}" state=started enabled=yes
@@ -19,6 +21,9 @@
   - name: Add icinga schema
     mysql_db: name=icinga state=present
     register: schema
+  - name: Add icingaweb schema
+    mysql_db: name=icingaweb2 state=present
+    register: schemaweb
 
   - name: print
     debug: msg=" {{ schema }}"
@@ -28,6 +33,8 @@
 
   - name: Add icinga user with all privilages
     mysql_user: name=icinga password=icinga priv='icinga.*:SELECT,INSERT,UPDATE,DELETE,DROP,CREATE VIEW,INDEX,EXECUTE' state=present
+  - name: Add icinga user with all privilages
+    mysql_user: name=icingaweb2 password=icingaweb2 priv='icingaweb2.*:SELECT,INSERT,UPDATE,DELETE,DROP,CREATE VIEW,INDEX,EXECUTE' state=present
 
   - name: Remove anonymous users from all HOST
     mysql_user: name='' host={{ item }} state=absent
@@ -43,6 +50,15 @@
     ignore_errors: True
     #when: ansible_local.sql.sql.imported is undefined
     when: schema.changed
+  - name: Import sql schema to icingaweb
+    mysql_db: state=import name=icingaweb2 target=/tmp/mysql.schema.sql
+    register: resultweb
+    ignore_errors: True
+    when: schemaweb.changed
+#use 'openssl passwd -1 password' command to create hash.
+  - name: Insert root user to icingaweb
+    mysql_db: state=import name=icingaweb2 target=/tmp/insert.sql
+    when: schemaweb.changed
 
   - name: Make sure facter dir exist
     file: path=/etc/ansible/facts.d recurse=yes state=directory

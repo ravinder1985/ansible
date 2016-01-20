@@ -1,6 +1,8 @@
 ---
 
 - include_vars: "{{ ansible_distribution }}/{{ ansible_distribution_major_version }}.yml"
+#- include_vars: test.yml
+#- include_vars: test.yml
 - include: mysql.yml
   become: yes
   become_method: sudo

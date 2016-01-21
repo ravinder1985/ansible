@@ -12,6 +12,8 @@
     yum: name=icinga2 state=present
   - name: Start icinga2
     service: name=icinga2 state=started enabled=yes
+  - name: Make sure /var/lib/icinga2/ca dir exist
+    file: path=/var/lib/icinga2/ca recurse=yes state=directory owner=icinga group=icinga mode="u=rwx,go="
 
   - name: Activate command feature
     shell: icinga2 feature enable command api checker compatlog icingastatus ido-mysql livestatus mainlog notification statusdata

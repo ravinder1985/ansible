@@ -12,5 +12,25 @@
     yum: name=icinga2 state=present
   - name: Start icinga2
     service: name=icinga2 state=started enabled=yes
+
   - name: Activate command feature
-    shell: icinga2 feature enable command 
+    shell: icinga2 feature enable command api checker compatlog icingastatus ido-mysql livestatus mainlog notification statusdata
+
+  - name: Check Key
+    debug: msg=" {{ key_file }}"
+  - name: Copy root user config file
+    template: src=zones.conf dest=/etc/icinga2/zones.conf-template mode=0600
+  - name: Copy CA key file
+    copy:
+      dest="{{ key_file.file }}"
+      content="{{ key_file.content }}"
+      owner="{{ key_file.owner }}"
+      group="{{ key_file.group }}"
+      mode="{{ key_file.mode }}"
+  - name: Copy CA CRT file
+    copy:
+      dest="{{ ca_crt.file }}"
+      content="{{ ca_crt.content }}"
+      owner="{{ ca_crt.owner }}"
+      group="{{ ca_crt.group }}"
+      mode="{{ ca_crt.mode }}"
